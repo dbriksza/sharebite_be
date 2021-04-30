@@ -2,11 +2,13 @@ const db = require("../data/db-config");
 const { Model } = require("objection");
 Model.knex(db);
 
+// I find classes (especially interdependent classes) hard to read but this framework likes them
+
 class section extends Model {
   static get tableName() {
     return "section";
   }
-
+  //establishes 1 to many relationship
   static get relationMappings() {
     return {
       item: {
@@ -24,7 +26,7 @@ class item extends Model {
   static get tableName() {
     return "item";
   }
-
+  // closes 1 to many relationship
   static get relationMappings() {
     return {
       section: {
@@ -40,6 +42,7 @@ class item extends Model {
         modelClass: modifier,
         join: {
           from: "item.id",
+          //does black magic to add to an existing, but only implicitly defined table
           through: {
             from: "item_modifier.item_id",
             to: "item_modifier.modifier_id",
@@ -62,6 +65,7 @@ class modifier extends Model {
         modelClass: item,
         join: {
           from: "modifier.id",
+          //also working off the implicitly defined table
           through: {
             from: "item_modifier.modifier_id",
             to: "item_modifier.item_id",
